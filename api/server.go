@@ -11,5 +11,6 @@ func StartServer() {
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/github/", gitHubHandler)
 	http.HandleFunc("/clear-cache/", clearCacheHandler)
+	http.HandleFunc("/webhooks/", webhooksHandler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

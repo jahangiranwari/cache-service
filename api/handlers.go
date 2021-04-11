@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -31,4 +32,18 @@ func clearCacheHandler(w http.ResponseWriter, r *http.Request) {
 	cache.FlushDB()
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Cache cleared"))
+}
+
+func webhooksHandler(w http.ResponseWriter, r *http.Request) {
+	signature := r.Header.Get("x-hub-signature")
+	body, _ := ioutil.ReadAll(r.Body)
+
+	if !httputil.VerifySignature(signature, body) {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Invalid signature!"))
+		w.WriteHeader(http.StatusBadRequest)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("200 - Done!"))
+	}
 }
