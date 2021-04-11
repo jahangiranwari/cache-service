@@ -8,6 +8,7 @@ import (
 
 	"github.com/jahangiranwari/cache-service/cache"
 	"github.com/jahangiranwari/cache-service/httputil"
+	"github.com/jahangiranwari/cache-service/task"
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +44,18 @@ func webhooksHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Invalid signature!"))
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
+		repoName := getRepoName(body)
+		updateTask := task.NewUpdateCacheTask(repoName)
+		client := task.GetClient()
+		client.Enqueue(updateTask)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("200 - Done!"))
 	}
+}
+
+func getRepoName(body []byte) string {
+	var result map[string]interface{}
+	json.Unmarshal([]byte(body), &result)
+	repoData := result["repository"].(map[string]interface{})
+	return repoData["name"].(string)
 }
