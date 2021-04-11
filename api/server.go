@@ -10,5 +10,6 @@ func StartServer() {
 	port := os.Getenv("PORT")
 	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/github/", gitHubHandler)
+	http.HandleFunc("/clear-cache/", clearCacheHandler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
