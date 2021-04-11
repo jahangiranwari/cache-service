@@ -9,7 +9,7 @@ import (
 	"github.com/go-redis/redis/v7"
 )
 
-var expiry time.Duration
+var Expiry time.Duration
 var client *redis.Client
 
 func init() {
@@ -17,8 +17,8 @@ func init() {
 	if err != nil {
 		panic("Missing 'CACHE_EXPIRY' env variable")
 	}
-	expiry = time.Duration(exp) * time.Minute
-	fmt.Println("Cache expiry set to:", expiry)
+	Expiry = time.Duration(exp) * time.Minute
+	fmt.Println("Cache expiry set to:", Expiry)
 
 	client = NewClient()
 	pong, err := client.Ping().Result()

@@ -1,7 +1,7 @@
 package cache
 
 func Save(key string, data string) {
-	client.Set(key, data, expiry)
+	client.Set(key, data, Expiry)
 }
 
 func Query(key string) string {
