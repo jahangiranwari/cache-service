@@ -2,8 +2,11 @@ package api
 
 import (
 	"encoding/json"
+	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/jahangiranwari/cache-service/cache"
@@ -12,8 +15,9 @@ import (
 )
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Welcome!!"))
+	repos := strings.Split(os.Getenv("GITHUB_REPOS"), ",")
+	t := template.Must(template.ParseFiles("templates/home.html"))
+	t.Execute(w, repos)
 }
 
 func gitHubHandler(w http.ResponseWriter, r *http.Request) {
