@@ -1,3 +1,4 @@
 
 # Ignore Go binaries
 bin
+cache-service
