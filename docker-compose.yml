@@ -1,0 +1,48 @@
+version: "3.4"
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        APP_ENV: development
+    image: go-cache-service
+    env_file:
+      - ".env"
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - .:/go/src:cached
+    working_dir: /go/src
+    ports:
+      - 9999:9999
+    command: ["./bin/cache-service"]
+    depends_on:
+      - redis
+
+  worker:
+    image: go-cache-service
+    env_file:
+      - ".env"
+    volumes:
+      - .:/go/src:cached
+    command: ["./bin/worker"]
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:5.0
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
+  worker-ui:
+    image: "hibiken/asynqmon"
+    command: ["--redis_addr=redis:6379", "--redis_db=4"]
+    ports:
+      - 8080:8080
+
+volumes:
+  redis_data:
